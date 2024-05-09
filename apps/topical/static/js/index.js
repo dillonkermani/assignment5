@@ -49,7 +49,7 @@ app.data = {
           }).then(function (r) {
               self.posts.splice(idx, 1); // Removes the post from sight.
               console.log("Deleted post " + post.text);
-              this.update_tags();
+              self.update_tags();
 
           });
       },
