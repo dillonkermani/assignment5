@@ -8,19 +8,19 @@ from .models import get_user_email
 @action.uses('index.html', db, auth.user)
 def index():
     return dict(
-        post_url=URL('create_post'),
-        posts_url=URL('get_posts'),
-        delete_post_url=URL('delete_post'),
-        tags_url=URL('get_tags'),
-        toggle_tag_url=URL('toggle_tag')
+        create_post_url = URL('create_post'),
+        delete_post_url = URL('delete_post'),
+        get_posts_url   = URL('get_posts'),
+        get_tags_url    = URL('get_tags'),
+        toggle_tag_url  = URL('toggle_tag')
     )
 
 # Fetch posts
 @action('get_posts')
 @action.uses(db, auth.user)
 def get_posts():
-    posts = db(db.post.user_id == auth.current_user.get('id')).select(orderby=~db.post.created_at)
-    return dict(posts=posts.as_list())
+    posts = db(db.post.user_email == get_user_email()).select(orderby=db.post.id).as_list()
+    return dict(posts=posts)
 
 # Create a new post
 @action('create_post', method="POST")
@@ -29,7 +29,7 @@ def create_post():
     text = request.json.get('text')
     tags = set(request.json.get('tags', []))
     post_id = db.post.insert(text=text, user_id=auth.current_user.get('id'))
-    
+    print("Creating post with ID", post_id, "text:", text, "tags:", tags)
     # Handle tags
     for tag in tags:
         tag_record = db.tag(name=tag) or db.tag.insert(name=tag)
@@ -41,11 +41,8 @@ def create_post():
 @action('delete_post', method="POST")
 @action.uses(db, auth.user, session)
 def delete_post():
-    post_id = request.json.get('post_id')
-    post = db.post(post_id)
-    if not post or post.user_id != auth.current_user.get('id'):
-        abort(403)  # Unauthorized
-    db(db.post.id == post_id).delete()
+    id = request.json.get('id')
+    db(db.post.id == id).delete()
     return "ok"
 
 # Fetch tags

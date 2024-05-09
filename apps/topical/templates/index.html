@@ -1,24 +1,57 @@
 [[extend 'layout.html']]
 
-<div class="section" id="app">
-  <div class="columns">
-    <div class="column is-three-quarters">
-      <textarea id="post-input" v-model="newPostText" placeholder="What's on your mind?" v-if="isLoggedIn"></textarea>
-      <button id="post-button" @click="createPost" v-if="isLoggedIn">Post</button>
-      <div v-post v-for="(post, index) in filteredPosts" :key="post.id" :post="post" :is-owner="post.userId === userId"></div>
-    </div>
-    <div class="column is-one-quarter">
-      <div class="tags">
-        <button class="tag" v-for="tag in tags" :key="tag" @click="toggleTag(tag)" :class="{active: activeTags.includes(tag)}">
-          {{ tag }}
-        </button>
+<style>
+  [v-cloak] {
+       display: none;
+  }
+  </style>
+
+
+<div class="section" id="app" v-cloak>
+  <div class="container">
+    <div class="columns">
+      <div class="column is-three-quarters">
+        <textarea class="textarea" placeholder="Enter post here" rows="10" id="post-input"  v-model="newPostText"></textarea>
+        <button class="button is-success" id="post-button" @click="create_post">Post</button>
+
+        <div class="post" v-for="post in posts">
+          <div class="card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-content">
+                  <p class="post-content">{{post.text}}</p>
+                  <p>Made by {{post.user_email}} on {{post.timestamp}}</p>
+                </div>
+                <div class="media-right">
+                  <button class="delete_button" @click="delete_post(post)"><i class="delete-button has-text-danger fa-solid fa-trash-can trash"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-one-quarter">
+        <h2>Tags</h2>
+        <div class="tag-list">
+          <button class="tag" :class="{ 'is-success': tag.toggle }" v-for="tag in tags" :key="tag.name" @click="filterBy(tag)">{{tag.name}}</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 [[block page_scripts]]
+
+<script>
+  let create_post_url = "[[=XML(create_post_url)]]";
+  let delete_post_url = "[[=XML(delete_post_url)]]";
+  let get_posts_url = "[[=XML(get_posts_url)]]";
+  let get_tags_url = "[[=XML(get_tags_url)]]";
+  let toggle_tag_url = "[[=XML(toggle_tag_url)]]";
+
+</script>
+
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"></script>
-<script src="[[=URL('static/js/index.js')]]"></script>
+<script src="js/index.js"></script>
 [[end]]

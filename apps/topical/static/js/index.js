@@ -1,19 +1,19 @@
 "use strict";
 
+let app = {};
 // Complete. 
-const app = Vue.createApp({
+app.data = {
     data() {
       return {
         newPostText: '',
         posts: [],
         tags: [],
         activeTags: [],
-        userId: 'currentUserId', // This should be dynamically set based on the logged-in user
         isLoggedIn: true // This should be dynamically checked
       };
     },
     computed: {
-      filteredPosts() {
+      filtered_posts() {
         if (this.activeTags.length === 0) {
           return this.posts;
         }
@@ -21,23 +21,39 @@ const app = Vue.createApp({
       }
     },
     methods: {
-      createPost() {
+      create_post() {
         const tags = this.newPostText.match(/#\w+/g) || [];
-        axios.post('/create_post', { text: this.newPostText, tags: tags.map(tag => tag.slice(1)) })
-          .then(response => {
-            this.posts.unshift(response.data);
+        axios.post(create_post_url, {
+            text: this.newPostText, 
+            tags: tags.map(tag => tag.slice(1)) 
+        }).then(response => {
+            this.posts.unshift({
+                id: response.data.id, 
+                text: this.newPostText, 
+                tags: tags.map(tag => tag.slice(1))
+            });
             this.newPostText = '';
-            this.updateTags();
+            this.update_tags();
+        });
+      },
+      delete_post(post) {
+          let self = this;
+          let idx = self.find_post_idx(post);
+          if (idx === null) {
+              console.log("Post not found: " + post.text);
+              return;
+          }
+          let post_id = self.posts[idx].id; // Get the post's id
+          axios.post(delete_post_url, {
+              id: post_id, // Use the post's id here
+          }).then(function (r) {
+              self.posts.splice(idx, 1); // Removes the post from sight.
+              console.log("Deleted post " + post.text);
+              this.update_tags();
+
           });
       },
-      deletePost(postId) {
-        axios.post('/delete_post', { postId })
-          .then(() => {
-            this.posts = this.posts.filter(post => post.id !== postId);
-            this.updateTags();
-          });
-      },
-      toggleTag(tag) {
+      toggle_tag(tag) {
         const index = this.activeTags.indexOf(tag);
         if (index > -1) {
           this.activeTags.splice(index, 1);
@@ -45,21 +61,37 @@ const app = Vue.createApp({
           this.activeTags.push(tag);
         }
       },
-      updateTags() {
+      update_tags() {
         const allTags = new Set();
         this.posts.forEach(post => {
-          post.tags.forEach(tag => allTags.add(tag));
+            // Check if 'tags' exists and is an array; if not, treat it as an empty array.
+            const tags = Array.isArray(post.tags) ? post.tags : [];
+            tags.forEach(tag => allTags.add(tag));
         });
         this.tags = Array.from(allTags);
-      }
+      },
+      find_post_idx: function(post) {
+        // Finds the index of an item in the list.
+        for (let i = 0; i < this.posts.length; i++) {
+            if (this.posts[i] === post) {
+                return i;
+            }
+        }
+        return null;
     },
-    mounted() {
-      axios.get('/posts').then(response => {
-        this.posts = response.data.posts;
-        this.updateTags();
-      });
-    }
-  });
+    },
+};
+    
+app.vue = Vue.createApp(app.data).mount('#app');
+
+app.load_data = function() {
+    axios.get(get_posts_url).then(response => {
+        app.vue.posts = response.data.posts;
+        console.log("Loaded posts: ", app.vue.posts);
+        app.vue.update_tags();
+    }).catch(function(error) {
+        console.log('error loading posts: ', error);
+    });  
+};
   
-  app.mount('#app');
-  
+app.load_data(); // Load the initial data
