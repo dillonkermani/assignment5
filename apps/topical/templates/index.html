@@ -1,13 +1,23 @@
 [[extend 'layout.html']]
 
 <div class="section" id="app">
-<!-- Complete.  -->
+  <div class="columns">
+    <div class="column is-three-quarters">
+      <textarea id="post-input" v-model="newPostText" placeholder="What's on your mind?" v-if="isLoggedIn"></textarea>
+      <button id="post-button" @click="createPost" v-if="isLoggedIn">Post</button>
+      <div v-post v-for="(post, index) in filteredPosts" :key="post.id" :post="post" :is-owner="post.userId === userId"></div>
+    </div>
+    <div class="column is-one-quarter">
+      <div class="tags">
+        <button class="tag" v-for="tag in tags" :key="tag" @click="toggleTag(tag)" :class="{active: activeTags.includes(tag)}">
+          {{ tag }}
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 [[block page_scripts]]
-<script>
-  // Complete.
-</script>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"></script>
 <script src="[[=URL('static/js/index.js')]]"></script>
