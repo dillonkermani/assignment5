@@ -11,7 +11,7 @@
   <div class="container">
     <div class="columns">
       <div class="column is-three-quarters">
-        <textarea class="textarea" placeholder="Enter post here" rows="10" id="post-input"  v-model="newPostText"></textarea>
+        <textarea class="textarea" placeholder="Enter post here" rows="10" id="post-input"  v-model="newPost.text"></textarea>
         <button class="button is-success" id="post-button" @click="create_post">Post</button>
 
         <div class="post" v-for="post in posts">
@@ -33,7 +33,7 @@
       <div class="column is-one-quarter">
         <h2>Tags</h2>
         <div class="tag-list">
-          <button class="tag" :class="{ 'is-success': tag.toggle }" v-for="tag in tags" :key="tag.name" @click="filterBy(tag)">{{tag.name}}</button>
+          <button class="tag" :class="{ 'is-success': tag.toggle }" v-for="tag in tags" :key="tag.name" @click="filter_by(tag)">{{tag.name}}</button>
         </div>
       </div>
     </div>
