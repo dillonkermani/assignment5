@@ -25,23 +25,30 @@ app.data = {
     },
     methods: {
         create_post() {
-            const tags = this.newPost.text.match(/#\w+/g) || [];
+            const tagRegex = /#(\w+)/g; // Improved regex to ensure no unwanted characters
+            let match;
+            const tags = [];
+        
+            while ((match = tagRegex.exec(this.newPost.text)) !== null) {
+                tags.push(match[1]); // Pushes only the word without the hash
+            }
+        
             console.log("Creating post with text: ", this.newPost.text, " and tags: ", tags);
-
+        
             axios.post(create_post_url, {
                 text: this.newPost.text, 
-                tags: tags.map(tag => tag.slice(1)) 
+                tags: tags // Already correctly formatted
             }).then(response => {
-                console.log("Post created with ID: ", response.data.id);
                 this.posts.unshift({
-                        id: response.data.id, 
-                        text: this.newPost.text, 
-                        tags: tags.map(tag => tag.slice(1))
+                    id: response.data.id, 
+                    text: this.newPost.text, 
+                    tags: tags
                 });
                 this.reset_new_post();
                 this.update_tags();
             });
         },
+        
         delete_post(post) {
             let self = this;
             let idx = self.find_post_idx(post);
@@ -61,21 +68,27 @@ app.data = {
         },
         filter_by(tag) {
             const index = this.activeTags.indexOf(tag);
+            console.log("Filtering posts by tag: ", tag);
             if (index > -1) {
                 this.activeTags.splice(index, 1);
+                console.log("Removed tag from active filters: ", tag);
             } else {
                 this.activeTags.push(tag);
+                console.log("Added tag to active filters: ", tag);
             }
         },
         update_tags() {
             const allTags = new Set();
             this.posts.forEach(post => {
-                    // Check if 'tags' exists and is an array; if not, treat it as an empty array.
-                    const tags = Array.isArray(post.tags) ? post.tags : [];
-                    tags.forEach(tag => allTags.add(tag));
+                const tags = Array.isArray(post.tags) ? post.tags : [];
+                tags.forEach(tag => {
+                    const cleanTag = tag.replace(/[{}'"]/g, ""); // Remove unwanted characters
+                    allTags.add(cleanTag);
+                });
             });
             this.tags = Array.from(allTags);
-        },
+            console.log("Updated tags list: ", this.tags);
+        },        
         find_post_idx: function(post) {
             // Finds the index of an item in the list.
             for (let i = 0; i < this.posts.length; i++) {
