@@ -28,7 +28,7 @@ def get_posts():
 def create_post():
     text = request.json.get('text')
     tags = set(request.json.get('tags', []))
-    post_id = db.post.insert(text=text, user_id=auth.current_user.get('id'))
+    post_id = db.post.insert(text=text, tags=tags, user_id=auth.current_user.get('id'))
     print("Creating post with ID", post_id, "text:", text, "tags:", tags)
     # Handle tags
     for tag in tags:

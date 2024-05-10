@@ -25,6 +25,7 @@ db.define_table(
     'post',
     Field('user_email', default=get_user_email),
     Field('text', 'text'),
+    Field('tags', 'list:string'),
     Field('timestamp', 'datetime', default=lambda: datetime.datetime.utcnow()),
 )
 
