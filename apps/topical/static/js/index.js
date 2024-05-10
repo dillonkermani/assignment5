@@ -67,6 +67,8 @@ app.data = {
             });
         },
         filter_by(tag) {
+            tag.toggle = !tag.toggle;  // This toggles the state
+
             const index = this.activeTags.indexOf(tag);
             console.log("Filtering posts by tag: ", tag);
             if (index > -1) {
@@ -83,7 +85,7 @@ app.data = {
                 const tags = Array.isArray(post.tags) ? post.tags : [];
                 tags.forEach(tag => {
                     const cleanTag = tag.replace(/[{}'"]/g, ""); // Remove unwanted characters
-                    allTags.add(cleanTag);
+                    allTags.add({name: cleanTag, toggle: false});
                 });
             });
             this.tags = Array.from(allTags);
@@ -93,7 +95,7 @@ app.data = {
             // Finds the index of an item in the list.
             for (let i = 0; i < this.posts.length; i++) {
                 if (this.posts[i] === post) {
-                        return i;
+                    return i;
                 }
             }
             return null;
