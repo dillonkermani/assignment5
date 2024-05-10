@@ -33,8 +33,16 @@
       <div class="column is-one-quarter">
         <h2>Tags</h2>
         <div class="tag-list">
-          <button class="tag" :class="{ 'is-success': tag.toggle }" v-for="tag in tags" :key="tag.name" @click="filter_by(tag)">{{tag.name}}</button>
+          <button
+            class="tag"
+            :class="{ 'is-success': tag.toggle }"
+            v-for="tag in tags"
+            :key="tag.name"
+            @click="filter_by(tag)">
+            {{ tag }}
+          </button>
         </div>
+
       </div>
     </div>
   </div>
