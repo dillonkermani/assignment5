@@ -77,6 +77,7 @@ app.data = {
             } else {
                 this.activeTags.push(tag);
                 console.log("Added tag to active filters: ", tag);
+                console.log("Active tags: ", this.activeTags.map(tag => tag.name));
             }
         },
         update_tags() {
