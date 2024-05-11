@@ -53,12 +53,14 @@ app.data = {
         
             axios.post(create_post_url, {
                 text: this.newPost.text.replace(/[{}'"]/g, ""), 
-                tags: tags // Already correctly formatted
+                tags: tags, // Already correctly formatted
             }).then(response => {
                 this.posts.unshift({
                     id: response.data.id, 
                     text: this.newPost.text, 
-                    tags: tags
+                    tags: tags,
+                    user_email: this.email,
+
                 });
                 this.reset_new_post();
                 this.update_tags();

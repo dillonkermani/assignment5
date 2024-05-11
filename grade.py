@@ -274,7 +274,9 @@ class Assignment(ProtoAssignment):
         self.browser.refresh()
         time.sleep(SERVER_WAIT)
         posts = self.get_posts()
+        print("POSTS_3", len(posts), [p.find_element(By.CSS_SELECTOR, "p.post-content").text for p in posts])
         has_button = [len(p.find_elements(By.CSS_SELECTOR, "button.delete-button")) > 0 for p in posts]
+        print("HAS_BUTTON", has_button)
         assert has_button == [False, True, False], "S5-1 User 2 should be able to edit only the middle post."
         self.login(self.user1)
         self.goto('index')

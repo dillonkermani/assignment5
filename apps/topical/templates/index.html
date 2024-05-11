@@ -23,7 +23,7 @@
                   <p>Made by {{post.user_email}} on {{post.timestamp}}</p>
                 </div>
                 <div class="media-right">
-                  <button v-if="email === post.user_email" class="delete_button" @click="delete_post(post)"><i class="delete-button has-text-danger fa-solid fa-trash-can trash"></i></button>
+                  <button v-if="email === post.user_email" class="delete-button" @click="delete_post(post)"><i class="delete-button has-text-danger fa-solid fa-trash-can trash"></i></button>
                 </div>
               </div>
             </div>
