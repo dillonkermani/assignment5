@@ -20,7 +20,13 @@ app.data = {
             if (this.activeTags.length === 0) {
                 return this.posts;
             }
-            return this.posts.filter(post => post.tags.some(tag => this.activeTags.includes(tag)));
+            console.log("Filtering posts by tags: ", this.activeTags.map(tag => tag));
+            console.log("Post tags: ", this.posts.flatMap(post => post.tags.map(tag => tag)));
+            return this.posts.filter(post => 
+                post.tags.some(postTag => 
+                    this.activeTags.some(activeTag => activeTag === postTag.replace(/[{}'"]/g, ""))
+                )
+            );
         }
     },
     methods: {
@@ -36,7 +42,7 @@ app.data = {
             console.log("Creating post with text: ", this.newPost.text, " and tags: ", tags);
         
             axios.post(create_post_url, {
-                text: this.newPost.text, 
+                text: this.newPost.text.replace(/[{}'"]/g, ""), 
                 tags: tags // Already correctly formatted
             }).then(response => {
                 this.posts.unshift({
@@ -70,15 +76,17 @@ app.data = {
             tag.toggle = !tag.toggle;  // This toggles the state
 
             const index = this.activeTags.indexOf(tag);
-            console.log("Filtering posts by tag: ", tag);
-            if (index > -1) {
+            console.log("Filtering posts by tag: ", tag.name);
+            if (!tag.toggle) {
                 this.activeTags.splice(index, 1);
-                console.log("Removed tag from active filters: ", tag);
+                console.log("Removed tag from active filters: ", tag.name);
             } else {
-                this.activeTags.push(tag);
-                console.log("Added tag to active filters: ", tag);
+                this.activeTags.push(tag.name);
+                console.log("Added tag to active filters: ", tag.name);
                 console.log("Active tags: ", this.activeTags.map(tag => tag.name));
             }
+
+            
         },
         update_tags() {
             const allTags = new Set();

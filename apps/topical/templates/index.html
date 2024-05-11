@@ -14,7 +14,7 @@
         <textarea class="textarea" placeholder="Enter post here" rows="10" id="post-input"  v-model="newPost.text"></textarea>
         <button class="button is-success" id="post-button" @click="create_post">Post</button>
 
-        <div class="post" v-for="post in posts">
+        <div class="post" v-for="post in filtered_posts">
           <div class="card">
             <div class="card-content">
               <div class="media">
