@@ -249,9 +249,11 @@ class Assignment(ProtoAssignment):
     
     def step4(self):
         """Filtering posts"""
+        print("POSTS_1", len(self.get_posts()), [p.find_element(By.CSS_SELECTOR, "p.post-content").text for p in self.get_posts()])
         pasta_tag = self.find_tag("pasta")
         pasta_tag.click()
         time.sleep(SERVER_WAIT)
+        print("POSTS_2", len(self.get_posts()), [p.find_element(By.CSS_SELECTOR, "p.post-content").text for p in self.get_posts()])
         assert len(self.get_posts()) == 2, "S4-1 There should be two posts with pasta."
         pasta_tag.click()
         time.sleep(SERVER_WAIT)

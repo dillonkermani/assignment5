@@ -23,9 +23,13 @@ app.data = {
             console.log("Filtering posts by tags: ", this.activeTags.map(tag => tag));
             console.log("Post tags: ", this.posts.flatMap(post => post.tags.map(tag => tag)));
             return this.posts.filter(post => 
-                post.tags.some(postTag => 
-                    this.activeTags.some(activeTag => activeTag === postTag.replace(/[{}'"]/g, ""))
-                )
+                post.tags.some(postTag => {
+                    const cleanTags = postTag.replace(/[{}'"]/g, "").split(','); // Split tags by comma
+                    return cleanTags.some(cleanTag => {
+                        const trimmedTag = cleanTag.trim(); // Remove leading and trailing whitespace
+                        return this.activeTags.includes(trimmedTag);
+                    });
+                })
             );
         }
     },
@@ -94,12 +98,16 @@ app.data = {
                 const tags = Array.isArray(post.tags) ? post.tags : [];
                 tags.forEach(tag => {
                     const cleanTag = tag.replace(/[{}'"]/g, ""); // Remove unwanted characters
-                    allTags.add(cleanTag);
+                    const splitTags = cleanTag.split(','); // Split tags by comma
+                    splitTags.forEach(splitTag => {
+                        const trimmedTag = splitTag.trim(); // Remove leading and trailing whitespace
+                        allTags.add(trimmedTag);
+                    });
                 });
             });
             this.tags = Array.from(allTags).map(tag => ({name: tag, toggle: false}));
             console.log("Updated tags: ", this.tags.map(tag => tag.name));
-        },     
+        },
         find_post_idx: function(post) {
             // Finds the index of an item in the list.
             for (let i = 0; i < this.posts.length; i++) {
