@@ -239,6 +239,8 @@ class Assignment(ProtoAssignment):
         self.login(self.user1)
         self.goto('index')
         time.sleep(SERVER_WAIT)
+        # Print tags .name
+        print("TAGS", len(self.get_tags()), [tag.text for tag in self.get_tags()])
         assert len(self.get_tags()) == 5, "S3-1 There should be four tags."
         tags = self.get_tags()
         tag_text = set([tag.text for tag in tags])

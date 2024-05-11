@@ -86,12 +86,12 @@ app.data = {
                 const tags = Array.isArray(post.tags) ? post.tags : [];
                 tags.forEach(tag => {
                     const cleanTag = tag.replace(/[{}'"]/g, ""); // Remove unwanted characters
-                    allTags.add({name: cleanTag, toggle: false});
+                    allTags.add(cleanTag);
                 });
             });
-            this.tags = Array.from(allTags);
-            console.log("Updated tags list: ", this.tags);
-        },        
+            this.tags = Array.from(allTags).map(tag => ({name: tag, toggle: false}));
+            console.log("Updated tags: ", this.tags.map(tag => tag.name));
+        },     
         find_post_idx: function(post) {
             // Finds the index of an item in the list.
             for (let i = 0; i < this.posts.length; i++) {

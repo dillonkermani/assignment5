@@ -19,7 +19,7 @@ def index():
 @action('get_posts')
 @action.uses(db, auth.user)
 def get_posts():
-    posts = db(db.post.user_email == get_user_email()).select(orderby=db.post.id).as_list()
+    posts = db(db.post).select(orderby=~db.post.id).as_list()
     return dict(posts=posts)
 
 # Create a new post
