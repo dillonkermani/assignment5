@@ -23,7 +23,7 @@
                   <p>Made by {{post.user_email}} on {{post.timestamp}}</p>
                 </div>
                 <div class="media-right">
-                  <button class="delete_button" @click="delete_post(post)"><i class="delete-button has-text-danger fa-solid fa-trash-can trash"></i></button>
+                  <button v-if="email === post.user_email" class="delete_button" @click="delete_post(post)"><i class="delete-button has-text-danger fa-solid fa-trash-can trash"></i></button>
                 </div>
               </div>
             </div>
@@ -56,6 +56,7 @@
   let get_posts_url = "[[=XML(get_posts_url)]]";
   let get_tags_url = "[[=XML(get_tags_url)]]";
   let toggle_tag_url = "[[=XML(toggle_tag_url)]]";
+  let get_email_url = "[[=XML(get_email_url)]]";
 
 </script>
 

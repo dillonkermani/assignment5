@@ -12,15 +12,21 @@ def index():
         delete_post_url = URL('delete_post'),
         get_posts_url   = URL('get_posts'),
         get_tags_url    = URL('get_tags'),
-        toggle_tag_url  = URL('toggle_tag')
+        toggle_tag_url  = URL('toggle_tag'),
+        get_email_url = URL('get_email'),
     )
+
+@action('get_email')
+@action.uses(auth.user)
+def get_email():
+    return dict(email=get_user_email())
 
 # Fetch posts
 @action('get_posts')
 @action.uses(db, auth.user)
 def get_posts():
     posts = db(db.post).select(orderby=~db.post.id).as_list()
-    return dict(posts=posts)
+    return dict(email=get_user_email(), posts=posts)
 
 # Create a new post
 @action('create_post', method="POST")

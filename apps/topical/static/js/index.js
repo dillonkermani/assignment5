@@ -12,7 +12,7 @@ app.data = {
             posts: [],
             tags: [],
             activeTags: [],
-            isLoggedIn: true // This should be dynamically checked
+            email: "",
         };
     },
     computed: {
@@ -34,6 +34,12 @@ app.data = {
         }
     },
     methods: {
+        get_email() {
+            axios.get(get_email_url).then(response => {
+                console.log("Email: ", response.data.email);
+                return response.data.email;
+            });
+        },
         create_post() {
             const tagRegex = /#(\w+)/g; // Improved regex to ensure no unwanted characters
             let match;
@@ -131,6 +137,7 @@ app.vue = Vue.createApp(app.data).mount('#app');
 app.load_data = function() {
     console.log("Starting to load data...");
     axios.get(get_posts_url).then(response => {
+        app.vue.email = response.data.email;
         app.vue.posts = response.data.posts;
         console.log("Loaded posts: ", app.vue.posts);
         app.vue.update_tags();
